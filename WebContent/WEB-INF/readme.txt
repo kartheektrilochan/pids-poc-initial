@@ -1,0 +1,2 @@
+org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean has caused some issue as tis was used in hibernates 3
+using org.springframework.orm.hibernate4.LocalSessionFactoryBean insted
