@@ -1,3 +1,4 @@
+package rest.clients;
 import java.io.IOException;
 
 import org.springframework.web.client.RestTemplate;
