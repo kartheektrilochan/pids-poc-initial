@@ -21,8 +21,10 @@ public class MainClienTest {
 		// TODO Auto-generated method stub
 		RestTemplate template=new RestTemplate();
 		User user=new User();
-		user.setId("123");
-		user.setUsername("kkt");
+		user.setDeviceId("1234");
+		user.setEmailId("kkt");
+		user.setMobile("7411415955");
+		user.setPassword("password");
 		User responseUser=template.postForObject("http://localhost:8086/pids-poc"+UserLoginController.USER_CREATE, user, User.class);
 		ObjectMapper mapper=new ObjectMapper();
 		mapper.writer().writeValue(System.out, responseUser);

@@ -62,3 +62,5 @@ createddate timestamp
 ALTER TABLE orders
 ADD CONSTRAINT pk_orderid PRIMARY KEY (id);
 
+---userid registration sequence---
+create sequence sequence_userid;

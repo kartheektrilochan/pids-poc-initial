@@ -1,5 +1,7 @@
 package com.pids.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +27,11 @@ public class UserLoginServiceImpl implements IUserLoginService{
 	@Override
 	public void save(User user) {
 		 daoObj.save(user);
+	}
+	
+	@Override
+	public List<User> findByDeviceId(String queryParam) {
+		 return daoObj.find(queryParam);
 	}
 	
 

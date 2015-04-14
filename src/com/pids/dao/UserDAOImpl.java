@@ -1,5 +1,8 @@
 package com.pids.dao;
 
+import java.util.List;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -16,7 +19,16 @@ public class UserDAOImpl implements IUserDAO{
 	
 	@Override
 	public User getUserDetails(User user) {
-		return (User) sessionFactory.getCurrentSession().get(User.class, user.getUsername());
+		return (User) sessionFactory.getCurrentSession().get(User.class, user.getEmailId());
+	}
+	
+	
+	@Override
+	public List<User>  find(String queryParam) {
+		Query query=sessionFactory.getCurrentSession().getNamedQuery("User.findByDeviceId");
+		query.setString("deviceId", queryParam);
+		List<User>userList=query.list();
+		return userList;
 	}
 
 	@Override
@@ -29,4 +41,7 @@ public class UserDAOImpl implements IUserDAO{
 		tx.commit();
 		System.out.println("Saving data");
 	}
+
+
+	
 }
