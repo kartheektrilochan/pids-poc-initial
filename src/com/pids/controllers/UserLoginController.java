@@ -89,7 +89,7 @@ public class UserLoginController {
 					newUserObject.setLastloginDate(new Date());
 					newUserObject.setLogincount(new BigDecimal(0));
 					userService.save(newUserObject);
-					return user;
+					return newUserObject;
 				}
 			}
 		} catch (PidsException pidsexception) {
