@@ -1,7 +1,8 @@
 package rest.clients;
+import static com.pids.utils.PidsCommonConstants.BODY;
+import static com.pids.utils.PidsCommonConstants.HEADER;
+
 import java.io.IOException;
-import java.net.URI;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,12 +10,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pids.controllers.UserLoginController;
 import com.pids.core.MessageHeader;
 import com.pids.entity.User;
-
-import static com.pids.utils.PidsCommonConstants.*;
 
 
 public class MainClienTest {
