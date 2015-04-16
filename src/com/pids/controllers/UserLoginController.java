@@ -17,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.pids.core.MessageHeader;
 import com.pids.entity.User;
 import com.pids.exceptions.PidsException;
 import com.pids.service.IUserLoginService;
+
+import static com.pids.utils.PidsCommonConstants.BODY;
+import static com.pids.utils.PidsCommonConstants.HEADER;
 
 @Controller
 public class UserLoginController {
@@ -29,8 +33,7 @@ public class UserLoginController {
 	public static final String USER_CREATE = "/pids/rest/create";
 	public static final String PV_USERNAME = "username";
 	public static final String PV_PASSWORD = "password";
-	private final static Logger LOGGER = Logger
-			.getLogger(UserLoginController.class);
+	private final static Logger LOGGER = Logger.getLogger(UserLoginController.class);
 
 	@Autowired
 	private IUserLoginService userService;
@@ -44,7 +47,7 @@ public class UserLoginController {
 	 * ModelAndView("employeesList", model); }
 	 */
 
-	@RequestMapping(value = LOGINSERVIE_URLPATH + "/{" + PV_USERNAME + "}", method = RequestMethod.GET)
+	/*@RequestMapping(value = LOGINSERVIE_URLPATH + "/{" + PV_USERNAME + "}", method = RequestMethod.GET)
 	public @ResponseBody String checkLoginDetails(
 			@PathVariable(PV_USERNAME) String userName) {
 		System.out.println("calling checklogindetails method");
@@ -53,7 +56,7 @@ public class UserLoginController {
 		// user.setUsername(userName);
 		userService.getUserDetails(user);
 		return "hi";
-	}
+	}*/
 
 	@RequestMapping(value = TEST_UR_REST, method = RequestMethod.GET)
 	public @ResponseBody String testRest(
@@ -68,7 +71,9 @@ public class UserLoginController {
 	 * */
 	
 	@RequestMapping(value = USER_CREATE, method = RequestMethod.POST, headers = "content-type=application/json")
-	public @ResponseBody User createUser(@RequestBody User user) {
+	public @ResponseBody Map<String,Object> createUser(@RequestBody Map<String,User> requestMap) {
+		Map<String,Object> responseMap=new HashMap<String, Object>();
+		User user=(User) requestMap.get(BODY);
 		System.out.println("Rest-service called:" + USER_CREATE);
 		String device_id = user.getDeviceId();
 		try {
@@ -77,7 +82,7 @@ public class UserLoginController {
 				List<User> existingUsers = userService.findByDeviceId(device_id);
 				if (existingUsers.size() != 0) {
 					System.out.println("****Creation Failed::" + device_id+ " already exists");
-					throw new PidsException(PidsException.INVALID_DATA_EXCEPTION);
+					throw new PidsException(PidsException.INVALID_DATA_EXCEPTION+"::Device Id already exists");
 				} else {
 					User newUserObject = new User();
 					newUserObject.setDeviceId(device_id);
@@ -89,15 +94,17 @@ public class UserLoginController {
 					newUserObject.setLastloginDate(new Date());
 					newUserObject.setLogincount(new BigDecimal(0));
 					userService.save(newUserObject);
-					return newUserObject;
+					responseMap.put(BODY, newUserObject);
+					responseMap.put(HEADER,new MessageHeader("SUCCESS", "S01", "User Created"));
+					return responseMap;
 				}
 			}
 		} catch (PidsException pidsexception) {
-			return null;
+			responseMap.put(BODY, user);
+			responseMap.put(HEADER,new MessageHeader("FAILURE", "F011", "Service:"+USER_CREATE+" and exception is:"+pidsexception));
+			return responseMap;
 		}
 		return null;
-
-		
 	}
 
 }
