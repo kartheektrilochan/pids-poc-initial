@@ -99,7 +99,7 @@ public class UserLoginController {
 			}
 		} catch (PidsException pidsexception) {
 			responseMap.put(BODY, user);
-			responseMap.put(HEADER,new MessageHeader("FAILURE", "F011", "Service:"+USER_CREATE+" and exception is:"+pidsexception));
+			responseMap.put(HEADER,new MessageHeader("FAILURE", "F01", "Service:"+USER_CREATE+" and exception is:"+pidsexception));
 			return responseMap;
 		}
 		return null;
