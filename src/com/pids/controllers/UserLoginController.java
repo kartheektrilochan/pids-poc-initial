@@ -2,8 +2,10 @@ package com.pids.controllers;
 
 import static com.pids.utils.PidsCommonConstants.BODY;
 import static com.pids.utils.PidsCommonConstants.HEADER;
+import static com.pids.utils.PidsCommonConstants.USER_REGISTRATION;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pids.core.MessageHeader;
+import com.pids.entity.AddressDetail;
 import com.pids.entity.User;
 import com.pids.exceptions.PidsException;
 import com.pids.service.IUserLoginService;
@@ -27,10 +30,7 @@ import com.pids.service.IUserLoginService;
 public class UserLoginController {
 
 	public static final String TEST_UR_REST = "/pids/rest/test";
-	public static final String LOGINSERVIE_URLPATH = "/pids/rest/loginservice";
 	public static final String USER_CREATE = "/pids/rest/create";
-	public static final String PV_USERNAME = "username";
-	public static final String PV_PASSWORD = "password";
 	private final static Logger LOGGER = Logger.getLogger(UserLoginController.class);
 
 	@Autowired
@@ -56,19 +56,19 @@ public class UserLoginController {
 		return "hi";
 	}*/
 
-	@RequestMapping(value = TEST_UR_REST, method = RequestMethod.GET)
+	/*@RequestMapping(value = TEST_UR_REST, method = RequestMethod.GET)
 	public @ResponseBody String testRest(
 			@PathVariable(PV_USERNAME) String userName) {
 		LOGGER.info("User login requested:" + userName);
 		return "hi rest is working";
 	}
-
+*/
 	/*Create User-RestFul Service*/
 	/*Before creating the user check for the device id is already registered in database or not
 	 * 
 	 * */
 	
-	@RequestMapping(value = USER_CREATE, method = RequestMethod.POST, headers = "content-type=application/json")
+	@RequestMapping(value = USER_REGISTRATION, method = RequestMethod.POST, headers = "content-type=application/json")
 	public @ResponseBody Map<String,Object> createUser(@RequestBody Map<String,User> requestMap) {
 		Map<String,Object> responseMap=new HashMap<String, Object>();
 		User user=(User) requestMap.get(BODY);
@@ -82,8 +82,9 @@ public class UserLoginController {
 					System.out.println("****Creation Failed::" + device_id+ " already exists");
 					throw new PidsException(PidsException.INVALID_DATA_EXCEPTION+"::Device Id already exists");
 				} else {
-					User newUserObject = new User();
-					newUserObject.setDeviceId(device_id);
+					/*createObjectWithData(user);*/
+					User newUserObject = createObjectWithData(user);
+					/*newUserObject.setDeviceId(device_id);
 					newUserObject.setEmailId(user.getEmailId());
 					newUserObject.setPassword(user.getPassword());
 					newUserObject.setUserrole("C");
@@ -91,6 +92,7 @@ public class UserLoginController {
 					newUserObject.setLastupdateDate(new Date());
 					newUserObject.setLastloginDate(new Date());
 					newUserObject.setLogincount(new BigDecimal(0));
+					*/
 					userService.save(newUserObject);
 					responseMap.put(BODY, newUserObject);
 					responseMap.put(HEADER,new MessageHeader("SUCCESS", "S01", "User Created"));
@@ -105,4 +107,28 @@ public class UserLoginController {
 		return null;
 	}
 
+	private User createObjectWithData(User user) {
+		User newUserObject = new User();
+		newUserObject.setDeviceId(user.getDeviceId());
+		newUserObject.setEmailId(user.getEmailId());
+		newUserObject.setPassword(user.getPassword());
+		newUserObject.setUserrole("C");
+		newUserObject.setCreateDate(new Date());
+		newUserObject.setLastupdateDate(new Date());
+		newUserObject.setLastloginDate(new Date());
+		newUserObject.setLogincount(new BigDecimal(0));
+		/*Creating a blank record in user_details table and address_details table*/
+		AddressDetail addressDetailObj=new AddressDetail();
+		addressDetailObj.setUser(newUserObject);
+		List<AddressDetail> addressDetailsList=new ArrayList<AddressDetail>();
+		addressDetailsList.add(addressDetailObj);
+		newUserObject.setAddressDetails(addressDetailsList);
+		return newUserObject;
+	}
+
+
+	/*public static void main(String[] args) {
+		UserLoginController obj=new UserLoginController();
+		System.out.println(obj.generateUniqueString());
+	}*/
 }

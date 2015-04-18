@@ -1,19 +1,20 @@
 package com.pids.entity;
 
 import java.io.Serializable;
+
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.pids.utils.PidsQueries;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
+import static com.pids.utils.PidsQueries.*;
 
 /**
  * The persistent class for the USERS database table.
@@ -22,18 +23,20 @@ import javax.persistence.Table;
 @Entity
 @Table(name="USERS")
 @NamedQueries({
-			@NamedQuery(name="User.findAll", query="SELECT u FROM User u"),
-			@NamedQuery(name="User.findByDeviceId", query="SELECT u FROM User u where u.deviceId=:deviceId")
+			@NamedQuery(name=USERS_FINDALL, query=USERS_FINDBYDEVICEID_Q),
+			@NamedQuery(name=USER_FINDBYDEVICEID, query=USERS_FINDBYDEVICEID_Q)
 			})
-
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USERS_ID_GENERATOR", sequenceName="SEQUENCE_USERID")
+	@SequenceGenerator(name="USERS_ID_GENERATOR", sequenceName="SEQUENCE_USERID",initialValue=0,allocationSize=0)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USERS_ID_GENERATOR")
 	private int id;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_DATE")
 	private Date createDate;
 
@@ -43,9 +46,11 @@ public class User implements Serializable {
 	@Column(name="EMAIL_ID")
 	private String emailId;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LASTLOGIN_DATE")
 	private Date lastloginDate;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LASTUPDATE_DATE")
 	private Date lastupdateDate;
 
@@ -56,6 +61,10 @@ public class User implements Serializable {
 	private String password;
 
 	private String userrole;
+
+	//bi-directional many-to-one association to AddressDetail
+	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
+	private List<AddressDetail> addressDetails;
 
 	public User() {
 	}
@@ -139,5 +148,28 @@ public class User implements Serializable {
 	public void setUserrole(String userrole) {
 		this.userrole = userrole;
 	}
+
+	public List<AddressDetail> getAddressDetails() {
+		return this.addressDetails;
+	}
+
+	public void setAddressDetails(List<AddressDetail> addressDetails) {
+		this.addressDetails = addressDetails;
+	}
+
+	public AddressDetail addAddressDetail(AddressDetail addressDetail) {
+		getAddressDetails().add(addressDetail);
+		addressDetail.setUser(this);
+
+		return addressDetail;
+	}
+
+	public AddressDetail removeAddressDetail(AddressDetail addressDetail) {
+		getAddressDetails().remove(addressDetail);
+		addressDetail.setUser(null);
+
+		return addressDetail;
+	}
+
 
 }
