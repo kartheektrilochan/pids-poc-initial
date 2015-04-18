@@ -34,38 +34,9 @@ public class UserLoginController {
 	private IUserLoginService userService;
 
 	private User userEntity;
-	/*
-	 * @RequestMapping(value=LOGINSERVIE_URLPATH, method = RequestMethod.GET)
-	 * public ModelAndView getDetails(@ModelAttribute("command") User user) {
-	 * System.out.println("Calling service controller"); Map<String, Object>
-	 * model = new HashMap<String, Object>(); model.put("employees",
-	 * userService.getUserDetails(user)); return new
-	 * ModelAndView("employeesList", model); }
-	 */
 
-	/*@RequestMapping(value = LOGINSERVIE_URLPATH + "/{" + PV_USERNAME + "}", method = RequestMethod.GET)
-	public @ResponseBody String checkLoginDetails(
-			@PathVariable(PV_USERNAME) String userName) {
-		System.out.println("calling checklogindetails method");
-		LOGGER.info("User login requested:" + userName);
-		User user = new User();
-		// user.setUsername(userName);
-		userService.getUserDetails(user);
-		return "hi";
-	}*/
-
-	/*@RequestMapping(value = TEST_UR_REST, method = RequestMethod.GET)
-	public @ResponseBody String testRest(
-			@PathVariable(PV_USERNAME) String userName) {
-		LOGGER.info("User login requested:" + userName);
-		return "hi rest is working";
-	}
-*/
-	/*Create User-RestFul Service*/
-	/*Before creating the user check for the device id is already registered in database or not
-	 * 
-	 * */
 	
+	/*Create User Service*/
 	@RequestMapping(value = USER_REGISTRATION, method = RequestMethod.POST, headers = "content-type=application/json")
 	public @ResponseBody Map<String,Object> createUser(@RequestBody Map<String,User> requestMap) {
 		Map<String,Object> responseMap=new HashMap<String, Object>();
@@ -98,6 +69,7 @@ public class UserLoginController {
 		}
 	}
 	
+	/*Check Login Details Service*/
 	@RequestMapping(value = USER_LOGIN, method = RequestMethod.POST, headers = "content-type=application/json")
 	public @ResponseBody Map<String,Object> checkLogin(@RequestBody Map<String,User> requestMap) {
 		Map<String,Object> responseMap=new HashMap<String, Object>();
