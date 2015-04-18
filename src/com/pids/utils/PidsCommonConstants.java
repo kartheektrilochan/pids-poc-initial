@@ -8,4 +8,5 @@ public class PidsCommonConstants {
 	
 	/*Rest Service Url Paths*/
 	public static final String USER_REGISTRATION = "/pids/rest/create";
+	public static final String USER_LOGIN = "/pids/rest/login";
 }

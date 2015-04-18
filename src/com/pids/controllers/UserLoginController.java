@@ -1,8 +1,6 @@
 package com.pids.controllers;
 
-import static com.pids.utils.PidsCommonConstants.BODY;
-import static com.pids.utils.PidsCommonConstants.HEADER;
-import static com.pids.utils.PidsCommonConstants.USER_REGISTRATION;
+import static com.pids.utils.PidsCommonConstants.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,12 +28,12 @@ import com.pids.service.IUserLoginService;
 public class UserLoginController {
 
 	public static final String TEST_UR_REST = "/pids/rest/test";
-	public static final String USER_CREATE = "/pids/rest/create";
 	private final static Logger LOGGER = Logger.getLogger(UserLoginController.class);
 
 	@Autowired
 	private IUserLoginService userService;
 
+	private User userEntity;
 	/*
 	 * @RequestMapping(value=LOGINSERVIE_URLPATH, method = RequestMethod.GET)
 	 * public ModelAndView getDetails(@ModelAttribute("command") User user) {
@@ -72,7 +70,7 @@ public class UserLoginController {
 	public @ResponseBody Map<String,Object> createUser(@RequestBody Map<String,User> requestMap) {
 		Map<String,Object> responseMap=new HashMap<String, Object>();
 		User user=(User) requestMap.get(BODY);
-		System.out.println("Rest-service called:" + USER_CREATE);
+		System.out.println("Rest-service called:" + USER_REGISTRATION);
 		String device_id = user.getDeviceId();
 		try {
 			if (device_id != null) {
@@ -95,8 +93,62 @@ public class UserLoginController {
 			}
 		} catch (PidsException pidsexception) {
 			responseMap.put(BODY, user);
-			responseMap.put(HEADER,new MessageHeader("FAILURE", "F01", "Service:"+USER_CREATE+" and exception is:"+pidsexception));
+			responseMap.put(HEADER,new MessageHeader("FAILURE", "F01", "Service:"+USER_REGISTRATION+" and exception is:"+pidsexception));
 			return responseMap;
+		}
+	}
+	
+	@RequestMapping(value = USER_LOGIN, method = RequestMethod.POST, headers = "content-type=application/json")
+	public @ResponseBody Map<String,Object> checkLogin(@RequestBody Map<String,User> requestMap) {
+		Map<String,Object> responseMap=new HashMap<String, Object>();
+		User user=(User) requestMap.get(BODY);
+		boolean validDetails=validateRequestDetails(user);
+		try{
+			if(validDetails){
+				if(authenticateUser(user))
+				{
+					responseMap.put(BODY, user);
+					responseMap.put(HEADER, new MessageHeader("SUCCESS","S02","Login Successful"));
+					return responseMap;
+				}else{
+					throw new PidsException(PidsException.INVALID_DATA_EXCEPTION+"::Login Unsuccessful");
+				}
+			}
+			else{
+				throw new PidsException(PidsException.INVALID_DATA_EXCEPTION+"::Device Id is blank");
+			}
+		}catch(PidsException pidsException){
+		responseMap.put(BODY, user);
+		responseMap.put(HEADER,new MessageHeader("FAILURE", "F02", "Service:"+USER_LOGIN+" and exception is:"+pidsException));
+		return responseMap;
+	}
+	}
+
+	private boolean authenticateUser(User user) {
+		List<User> userList=userService.findByDeviceId(user.getDeviceId());
+		if(userList.size()==1){
+			if(userList.get(0).getPassword().equals(user.getPassword()) &&
+					userList.get(0).getMobile().equals(user.getMobile())){
+				/*checking and assigning the results to gobal variable*/
+				userEntity=userList.get(0);
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false; 
+		}
+	}
+
+	private boolean validateRequestDetails(User user) {
+		if(user.getDeviceId()!=null && user.getMobile()!=null && user.getPassword()!=null)
+		{
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 
