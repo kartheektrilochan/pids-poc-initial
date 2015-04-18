@@ -84,27 +84,20 @@ public class UserLoginController {
 				} else {
 					/*createObjectWithData(user);*/
 					User newUserObject = createObjectWithData(user);
-					/*newUserObject.setDeviceId(device_id);
-					newUserObject.setEmailId(user.getEmailId());
-					newUserObject.setPassword(user.getPassword());
-					newUserObject.setUserrole("C");
-					newUserObject.setCreateDate(new Date());
-					newUserObject.setLastupdateDate(new Date());
-					newUserObject.setLastloginDate(new Date());
-					newUserObject.setLogincount(new BigDecimal(0));
-					*/
 					userService.save(newUserObject);
 					responseMap.put(BODY, newUserObject);
 					responseMap.put(HEADER,new MessageHeader("SUCCESS", "S01", "User Created"));
 					return responseMap;
 				}
 			}
+			else{
+				throw new PidsException(PidsException.INVALID_DATA_EXCEPTION+"::Device Id is blank");
+			}
 		} catch (PidsException pidsexception) {
 			responseMap.put(BODY, user);
 			responseMap.put(HEADER,new MessageHeader("FAILURE", "F01", "Service:"+USER_CREATE+" and exception is:"+pidsexception));
 			return responseMap;
 		}
-		return null;
 	}
 
 	private User createObjectWithData(User user) {
@@ -117,6 +110,7 @@ public class UserLoginController {
 		newUserObject.setLastupdateDate(new Date());
 		newUserObject.setLastloginDate(new Date());
 		newUserObject.setLogincount(new BigDecimal(0));
+
 		/*Creating a blank record in user_details table and address_details table*/
 		AddressDetail addressDetailObj=new AddressDetail();
 		addressDetailObj.setUser(newUserObject);
