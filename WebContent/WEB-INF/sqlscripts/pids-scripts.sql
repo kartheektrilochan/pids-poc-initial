@@ -57,6 +57,35 @@ REFERENCES users(id)
 DROP CONSTRAINT SYS_C007109;*/
 
 
+drop table product_details;
+CREATE TABLE product_details
+(
+id varchar(30),
+supplierid varchar(30),
+categoryid varchar(30),
+productname varchar(30),
+productdesc varchar(300),
+price number(5,5),
+color varchar(30),
+availstock int,
+weight number(5,5),
+productsize varchar(30),
+soldstock int,
+discount number(5,5),
+status varchar(30),
+picture varchar(500),
+frequency varchar(30),
+productincarts number(5,10),
+create_date timestamp,
+lastpurchasedate timestamp,
+lastsearcheddate timestamp
+);
+
+ALTER TABLE product_details
+ADD CONSTRAINT pk_product_details_id PRIMARY KEY (id);
+
+
+
 /*
 Sequence Creation
 */
@@ -65,3 +94,7 @@ create sequence sequence_userid;
 create sequence sequence_user_detailsid;
 create sequence sequence_address_detailsid;
 create sequence sequence_order_detailsid;
+
+create sequence sequence_product_detailsid;
+create sequence sequence_supplier_detailsid;
+create sequence sequence_category_detailsid;
