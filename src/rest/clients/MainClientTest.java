@@ -29,6 +29,8 @@ public class MainClientTest {
 		/*Test for login*/
 		testLoginUser();
 
+		
+		
 	}
 
 	private static void testCreate() throws JsonGenerationException, JsonMappingException, IOException {
