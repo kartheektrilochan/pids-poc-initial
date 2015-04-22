@@ -24,8 +24,6 @@ public class MainClientTest {
 	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException {
 		//testCreate(); 
 		//testCreateWithMultiple();
-		
-		
 		/*Test for login*/
 		testLoginUser();
 
