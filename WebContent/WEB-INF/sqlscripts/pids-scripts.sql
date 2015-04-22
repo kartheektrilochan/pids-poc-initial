@@ -84,6 +84,58 @@ lastsearcheddate timestamp
 ALTER TABLE product_details
 ADD CONSTRAINT pk_product_details_id PRIMARY KEY (id);
 
+/*Below Scripts Created by Prasadh*/
+
+drop table product_category;
+CREATE TABLE product_category
+(
+id varchar(30),
+product_name varchar(255),
+product_type varchar(255),
+lastupdated timestamp,
+createddate timestamp
+);
+
+ALTER TABLE product_category
+ADD CONSTRAINT pk_category_id PRIMARY KEY (id);
+
+drop table supplier;
+CREATE TABLE supplier
+(
+id varchar(30),
+supplier_name varchar(255),
+area varchar(100),
+mobile number(11),
+createddate timestamp,
+lastupdated timestamp
+);
+
+ALTER TABLE supplier
+ADD CONSTRAINT pk_supplier_id PRIMARY KEY (id);
+
+drop table product_items
+CREATE TABLE product_items
+(
+id varchar(30),
+category_id varchar(30),
+supplier_id varchar(30),
+item_name varchar(255),
+cost number(11,2),
+status CHAR(1),
+createddate timestamp,
+lastupdated timestamp
+);
+
+
+ALTER TABLE product_items
+ADD CONSTRAINT pk_product_items_id PRIMARY KEY (id);
+
+ALTER TABLE product_items
+ADD FOREIGN KEY (category_id) REFERENCES product_category(id);
+
+ALTER TABLE product_items
+ADD FOREIGN KEY (supplier_id) REFERENCES supplier(id);
+
 
 
 /*
